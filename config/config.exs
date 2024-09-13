@@ -33,7 +33,7 @@ config :timezone_converter, TimezoneConverter.Mailer, adapter: Swoosh.Adapters.L
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.17.11",
+  version: "0.23.1",
   timezone_converter: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
@@ -43,7 +43,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.4.3",
+  version: "3.4.11",
   timezone_converter: [
     args: ~w(
       --config=tailwind.config.js
