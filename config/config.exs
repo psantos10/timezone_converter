@@ -22,6 +22,8 @@ config :timezone_converter, TimezoneConverterWeb.Endpoint,
   pubsub_server: TimezoneConverter.PubSub,
   live_view: [signing_salt: "I9o4/Kv/"]
 
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
