@@ -17,7 +17,7 @@ defmodule TimezoneConverterWeb.Router do
   scope "/", TimezoneConverterWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", TimezoneConverterLive
   end
 
   # Other scopes may use custom stacks.

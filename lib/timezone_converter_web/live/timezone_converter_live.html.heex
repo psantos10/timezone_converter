@@ -1,0 +1,29 @@
+<div class="mb-2">
+  <h2 class="text-2xl">Enter time</h2>
+  <.input type="time" name="current_time" value={@selected_time} class="w-6" />
+  <small>
+    Use current time
+  </small>
+</div>
+
+<div class="mt-4 mb-2">
+  <h2 class="text-2xl -mb-6">Your timezones</h2>
+
+  <.table id="timezones" rows={@timezones}>
+    <:col :let={timezone} label="City"><%= timezone.city_name %></:col>
+    <:col :let={timezone} label="Time"><%= timezone.time %></:col>
+    <:col :let={timezone} label="Timezone"><%= timezone.timezone %></:col>
+    <:actions>
+      <.button>x</.button>
+    </:actions>
+  </.table>
+</div>
+
+<div class="mt-4">
+  <.label for="city">City name</.label>
+  <.input type="text" name="city" id="city" value="" />
+
+  <div class="mt-4">
+    <.button>ADD</.button>
+  </div>
+</div>
