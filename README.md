@@ -1,18 +1,39 @@
 # TimezoneConverter
 
-To start your Phoenix server:
+## Getting Started
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Follow these steps to set up and run the Phoenix application:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### 1. Database Setup
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- Ensure that PostgreSQL is installed and running locally.
+- Update the database credentials in `config/dev.exs` to match your local setup.
 
-## Learn more
+### 2. Installation
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- Install dependencies and set up the database by running:
+
+```bash
+mix setup
+```
+- Import the cities data from the SQL file by running:
+
+```bash
+mix run priv/repo/import_sql_cities.exs
+```
+
+### 3. Running the Server
+
+Start the Phoenix server with:
+```bash
+mix phx.server
+```
+
+Or, if you want to run it inside IEx (Interactive Elixir):
+
+```bash
+iex -S mix phx.server
+```
+### 4. Access the Application
+
+Open your browser and navigate to http://localhost:4000 to access the app.
