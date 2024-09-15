@@ -20,19 +20,19 @@
     }
     if (!window.requestAnimationFrame)
       window.requestAnimationFrame = function (callback, element) {
-        var currTime = new Date().getTime(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-        var timeToCall = Math.max(0, 16 - (currTime - lastTime), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        var currTime = new Date().getTime();
+        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
         var id = window.setTimeout(function () {
-          callback(currTime + timeToCall, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-        }, timeToCall, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+          callback(currTime + timeToCall);
+        }, timeToCall);
         lastTime = currTime + timeToCall;
         return id;
       };
     if (!window.cancelAnimationFrame)
       window.cancelAnimationFrame = function (id) {
-        clearTimeout(id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        clearTimeout(id);
       };
-  })(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  })();
 
   var canvas,
     currentProgress,
@@ -41,8 +41,8 @@
     fadeTimerId = null,
     delayTimerId = null,
     addEvent = function (elem, type, handler) {
-      if (elem.addEventListener) elem.addEventListener(type, handler, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-      else if (elem.attachEvent) elem.attachEvent("on" + type, handler, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      if (elem.addEventListener) elem.addEventListener(type, handler, false);
+      else if (elem.attachEvent) elem.attachEvent("on" + type, handler);
       else elem["on" + type] = handler;
     },
     options = {
@@ -63,33 +63,33 @@
       canvas.width = window.innerWidth;
       canvas.height = options.barThickness * 5; // need space for shadow
 
-      var ctx = canvas.getContext("2d", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      var ctx = canvas.getContext("2d");
       ctx.shadowBlur = options.shadowBlur;
       ctx.shadowColor = options.shadowColor;
 
-      var lineGradient = ctx.createLinearGradient(0, 0, canvas.width, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      var lineGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
       for (var stop in options.barColors)
-        lineGradient.addColorStop(stop, options.barColors[stop], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        lineGradient.addColorStop(stop, options.barColors[stop]);
       ctx.lineWidth = options.barThickness;
-      ctx.beginPath(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-      ctx.moveTo(0, options.barThickness / 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      ctx.beginPath();
+      ctx.moveTo(0, options.barThickness / 2);
       ctx.lineTo(
         Math.ceil(currentProgress * canvas.width),
         options.barThickness / 2
-        , CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      );
       ctx.strokeStyle = lineGradient;
-      ctx.stroke(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      ctx.stroke();
     },
     createCanvas = function () {
-      canvas = document.createElement("canvas", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      canvas = document.createElement("canvas");
       var style = canvas.style;
       style.position = "fixed";
       style.top = style.left = style.right = style.margin = style.padding = 0;
       style.zIndex = 100001;
       style.display = "none";
-      if (options.className) canvas.classList.add(options.className, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-      document.body.appendChild(canvas, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-      addEvent(window, "resize", repaint, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      if (options.className) canvas.classList.add(options.className);
+      document.body.appendChild(canvas);
+      addEvent(window, "resize", repaint);
     },
     topbar = {
       config: function (opts) {
@@ -100,21 +100,21 @@
         if (showing) return;
         if (delay) {
           if (delayTimerId) return;
-          delayTimerId = setTimeout(() => topbar.show(), delay, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+          delayTimerId = setTimeout(() => topbar.show(), delay);
         } else {
           showing = true;
-          if (fadeTimerId !== null) window.cancelAnimationFrame(fadeTimerId, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-          if (!canvas) createCanvas(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+          if (fadeTimerId !== null) window.cancelAnimationFrame(fadeTimerId);
+          if (!canvas) createCanvas();
           canvas.style.opacity = 1;
           canvas.style.display = "block";
-          topbar.progress(0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+          topbar.progress(0);
           if (options.autoRun) {
             (function loop() {
-              progressTimerId = window.requestAnimationFrame(loop, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+              progressTimerId = window.requestAnimationFrame(loop);
               topbar.progress(
                 "+" + 0.05 * Math.pow(1 - Math.sqrt(currentProgress), 2)
-                , CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-            })(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+              );
+            })();
           }
         }
       },
@@ -124,19 +124,19 @@
           to =
             (to.indexOf("+") >= 0 || to.indexOf("-") >= 0
               ? currentProgress
-              : 0) + parseFloat(to, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+              : 0) + parseFloat(to);
         }
         currentProgress = to > 1 ? 1 : to;
-        repaint(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        repaint();
         return currentProgress;
       },
       hide: function () {
-        clearTimeout(delayTimerId, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        clearTimeout(delayTimerId);
         delayTimerId = null;
         if (!showing) return;
         showing = false;
         if (progressTimerId != null) {
-          window.cancelAnimationFrame(progressTimerId, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+          window.cancelAnimationFrame(progressTimerId);
           progressTimerId = null;
         }
         (function loop() {
@@ -148,8 +148,8 @@
               return;
             }
           }
-          fadeTimerId = window.requestAnimationFrame(loop, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-        })(, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+          fadeTimerId = window.requestAnimationFrame(loop);
+        })();
       },
     };
 
@@ -158,8 +158,8 @@
   } else if (typeof define === "function" && define.amd) {
     define(function () {
       return topbar;
-    }, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    });
   } else {
     this.topbar = topbar;
   }
-}.call(this, window, document), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+}.call(this, window, document));

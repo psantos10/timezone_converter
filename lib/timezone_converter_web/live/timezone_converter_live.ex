@@ -5,9 +5,9 @@ defmodule TimezoneConverterWeb.TimezoneConverterLive do
   alias TimezoneConverter.Timezone
 
   def mount(_params, _session, socket) do
-    timezones = []
-    selected_time = current_local_time()
     cities = Cities.get_all_cities()
+    selected_time = current_local_time()
+    client_timezone = get_connect_params(socket)["client_timezone"]
 
     if connected?(socket) do
       :timer.send_interval(1000, self(), :set_current_time)
@@ -17,9 +17,9 @@ defmodule TimezoneConverterWeb.TimezoneConverterLive do
       assign(socket,
         time_live_update?: true,
         selected_time: selected_time,
-        timezones: timezones,
+        timezones: [],
         cities: cities,
-        client_timezone: get_connect_params(socket)["client_timezone"]
+        client_timezone: client_timezone
       )
 
     {:ok, socket}
@@ -29,24 +29,9 @@ defmodule TimezoneConverterWeb.TimezoneConverterLive do
     time_live_update? = socket.assigns.time_live_update?
 
     if time_live_update? do
-      timezones =
-        Enum.map(socket.assigns.timezones, fn tz ->
-          %{
-            id: tz.id,
-            city_name: tz.city_name,
-            time:
-              Timezone.convert_time(
-                socket.assigns.selected_time,
-                socket.assigns.client_timezone,
-                tz.timezone
-              ),
-            timezone: tz.timezone
-          }
-        end)
-
       socket =
         socket
-        |> assign(:timezones, timezones)
+        |> assign_timezones()
         |> assign(:selected_time, current_local_time())
 
       {:noreply, socket}
@@ -56,31 +41,16 @@ defmodule TimezoneConverterWeb.TimezoneConverterLive do
   end
 
   def handle_event("manual_time_update", %{"current_time" => selected_time}, socket) do
-    timezones =
-      Enum.map(socket.assigns.timezones, fn tz ->
-        %{
-          id: tz.id,
-          city_name: tz.city_name,
-          time:
-            Timezone.convert_time(
-              socket.assigns.selected_time,
-              socket.assigns.client_timezone,
-              tz.timezone
-            ),
-          timezone: tz.timezone
-        }
-      end)
-
     socket =
       socket
       |> assign(:time_live_update?, false)
       |> assign(:selected_time, selected_time)
-      |> assign(:timezones, timezones)
+      |> assign_timezones()
 
     {:noreply, socket}
   end
 
-  def handle_event("set_current_time", %{}, socket) do
+  def handle_event("set_current_time", _params, socket) do
     socket =
       socket
       |> assign(:time_live_update?, true)
@@ -131,5 +101,24 @@ defmodule TimezoneConverterWeb.TimezoneConverterLive do
     {:ok, time} = Time.from_erl(erl_time)
 
     time
+  end
+
+  defp assign_timezones(socket) do
+    timezones =
+      Enum.map(socket.assigns.timezones, fn tz ->
+        %{
+          id: tz.id,
+          city_name: tz.city_name,
+          time:
+            Timezone.convert_time(
+              socket.assigns.selected_time,
+              socket.assigns.client_timezone,
+              tz.timezone
+            ),
+          timezone: tz.timezone
+        }
+      end)
+
+    assign(socket, :timezones, timezones)
   end
 end

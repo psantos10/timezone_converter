@@ -19,7 +19,9 @@
     <:col :let={timezone} label="Time"><%= timezone.time %></:col>
     <:col :let={timezone} label="Timezone"><%= timezone.timezone %></:col>
     <:action :let={timezone}>
-      <.button phx-click="remove_city" phx-value-id={timezone.id}>x</.button>
+      <.button phx-click="remove_city" phx-value-id={timezone.id} class="bg-red-500 py-0 px-2">
+        x
+      </.button>
     </:action>
   </.table>
 </div>
