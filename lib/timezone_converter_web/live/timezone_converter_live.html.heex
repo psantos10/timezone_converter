@@ -1,8 +1,13 @@
 <div class="mb-2">
   <h2 class="text-2xl">Enter time</h2>
-  <.input type="time" name="current_time" value={@selected_time} class="w-6" />
+
+  <form phx-change="manual_time_update">
+    <.input type="time" id="current_time" name="current_time" value={@selected_time} class="w-6" />
+  </form>
   <small>
-    Use current time
+    <.link class="underline cursor-pointer" phx-click="set_current_time">
+      Use current time
+    </.link>
   </small>
 </div>
 
@@ -13,17 +18,32 @@
     <:col :let={timezone} label="City"><%= timezone.city_name %></:col>
     <:col :let={timezone} label="Time"><%= timezone.time %></:col>
     <:col :let={timezone} label="Timezone"><%= timezone.timezone %></:col>
-    <:actions>
-      <.button>x</.button>
-    </:actions>
+    <:action :let={timezone}>
+      <.button phx-click="remove_city" phx-value-id={timezone.id}>x</.button>
+    </:action>
   </.table>
 </div>
 
 <div class="mt-4">
-  <.label for="city">City name</.label>
-  <.input type="text" name="city" id="city" value="" />
+  <.form phx-submit="submit_city">
+    <.label for="city">City name</.label>
+    <.input
+      type="text"
+      name="city"
+      id="city"
+      value=""
+      list="cities"
+      autocomplete="off"
+      class="form-select"
+    />
+    <datalist id="cities">
+      <option :for={city <- @cities} value={"#{city.id} - #{city.city}"}>
+        <%= city.city %> (<%= city.country %>)
+      </option>
+    </datalist>
 
-  <div class="mt-4">
-    <.button>ADD</.button>
-  </div>
+    <div class="mt-4">
+      <.button>ADD</.button>
+    </div>
+  </.form>
 </div>
